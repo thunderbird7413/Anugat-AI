@@ -4,8 +4,7 @@ import axios from 'axios';
 import {
   Box, TextField, Button, Typography, Card, LinearProgress,
   List, ListItem, ListItemText, IconButton, Avatar, Chip,
-  Divider, InputAdornment, Grid, Paper, Badge, CircularProgress, Snackbar,
-  Alert
+  Divider, InputAdornment, Grid, Snackbar, Alert, CircularProgress
 } from '@mui/material';
 import { Send, Search, Delete, History, Add } from '@mui/icons-material';
 
@@ -29,17 +28,15 @@ const ChatInterface = () => {
       const res = await axios.get('/api/chat/chatHistory', {
         headers: { Authorization: `Bearer ${authToken}` }
       });
-      // console.log("chats", res.data);
       setChatHistory(res.data);
     } catch (err) {
       console.error('Error fetching chat history:', err);
     }
   };
 
-
   useEffect(() => {
     scrollToBottom();
-    fetchChatHistory(); // Load on mount
+    fetchChatHistory();
   }, [messages]);
 
   const handleSubmit = async (e) => {
@@ -96,18 +93,24 @@ const ChatInterface = () => {
   );
 
   return (
-    <Grid container sx={{ height: '100vh' }}>
-      {/* Left Sidebar */}
+    <Grid container sx={{ height: '100vh', overflow: 'hidden' }}>
+      {/* Sidebar */}
       <Grid
-        size={{ xs: 12, md: 3 }}
+        item
+        xs={12}
+        md={2} // Changed from md={3} to make sidebar narrower
         sx={{
-          // borderRight: '1px solid #e0e0e0',
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
+          height: '100vh',
+          overflowY: 'auto',
           backgroundColor: 'background.default',
+          borderRight: '1px solid #e0e0e0',
+          width: 400, // Set fixed width instead of using grid ratio
+          flexShrink: 0 // Prevent width adjustment
         }}
       >
-        <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ p: 2 }}>
           <Button
             variant="contained"
             startIcon={<Add />}
@@ -136,28 +139,25 @@ const ChatInterface = () => {
             sx={{ mb: 2 }}
           />
 
-          <List sx={{ overflow: 'auto', flexGrow: 1 }}>
+          <List>
             {(searchQuery ? filteredChatHistory : chatHistory).map((chat) => (
               <ListItem
                 button
                 key={chat._id}
-                sx={{
-                  borderRadius: 1,
-                  mb: 0.5,
-                  '&:hover': { backgroundColor: 'action.hover' }
-                }}
+                sx={{ borderRadius: 1, mb: 0.5 }}
               >
                 <ListItemText
-                  sx={{
-                    '&:hover': {
-                      cursor: 'pointer',
-                    },
-                  }}
                   primary={chat.question && typeof chat.question === 'string'
                     ? chat.question
                     : Array.isArray(chat.question) && chat.question.length > 0
                       ? chat.question[0].text
                       : 'Untitled'}
+                  sx={{
+                    '&:hover': {
+                      cursor: "pointer"
+                    },
+
+                  }}
                   selected={selectedChat?.id === chat._id}
                   onClick={() => {
                     setSelectedChat(chat);
@@ -168,177 +168,157 @@ const ChatInterface = () => {
                       sources: chat.sources,
                       timestamp: new Date()
                     };
-
                     setMessages([botMessage]);
                   }}
                 />
-                <IconButton edge="end" size="small">
-                  <Delete onClick={() => handleDelete(chat._id)} fontSize="small" />
+                <IconButton edge="end" size="small" onClick={() => handleDelete(chat._id)}>
+                  <Delete fontSize="small" />
                 </IconButton>
               </ListItem>
             ))}
           </List>
-
         </Box>
       </Grid>
 
-      {/* Main Chat Area */}
+      {/* Chat Area */}
       <Grid
-        size={{ xs: 12, md: 9 }}
+        item
+        xs={12}
+        md={9}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
-          backgroundColor: 'background.default',
+          overflow: 'hidden',
+          width: '100%', // Add explicit width
+          flex: 1 // Ensure it takes available space
         }}
       >
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100vh',
-          backgroundColor: 'background.default',
-        }}>
-          {/* Chat Header */}
-          <Box sx={{
-            p: 2,
-            borderBottom: '1px solid #e0e0e0',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: 'background.paper',
-          }}>
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>AI</Avatar>
-              <Typography variant="h6">Institutional Assistant</Typography>
-            </Box>
-            <Box>
-              {/* Used Snackbar for toast notification*/}
-              <Snackbar
-                open={toastOpen}
-                autoHideDuration={3000}
-                onClose={() => setToastOpen(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-              >
-                <Alert severity="success" onClose={() => setToastOpen(false)} sx={{ width: '100%' }}>
-                  Deleted Successfully!
-                </Alert>
-              </Snackbar>
-            </Box>
-          </Box>
 
-          {/* Chat Messages */}
-          <Box sx={{
-            flexGrow: 1,
-            overflow: 'auto',
-            p: 2,
-            background: 'linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%)'
-          }}>
-            {messages?.map((msg, index) => (
-              <Box
-                key={index}
+        {/* Header */}
+        <Box sx={{
+          p: 2,
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'background.paper',
+        }}>
+          <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>AI</Avatar>
+          <Typography variant="h6">Institutional Assistant</Typography>
+          <Snackbar
+            open={toastOpen}
+            autoHideDuration={3000}
+            onClose={() => setToastOpen(false)}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert severity="success" onClose={() => setToastOpen(false)} sx={{ width: '100%' }}>
+              Deleted Successfully!
+            </Alert>
+          </Snackbar>
+        </Box>
+
+        {/* Messages */}
+        <Box sx={{
+          flexGrow: 1,
+          overflowY: 'auto',
+          p: 2,
+          background: 'linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%)'
+        }}>
+          {messages?.map((msg, index) => (
+            <Box sx={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              p: 2,
+              width: '80%', // Add width constraint
+              maxWidth: '100%', // Prevent overflow
+              background: 'linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%)'
+            }}>
+              <Card
                 sx={{
-                  display: 'flex',
-                  justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                  mb: 2
+                  p: 2,
+                  // maxWidth: '85%', // Increased from 70%
+                  minWidth: '300px', // Add minimum width
+                  width: 'fit-content', // Allow content-based width
+                  maxWidth: '100%', // Ensure it doesn't overflow container
+                  backgroundColor: msg.sender === 'user' ? 'primary.light' : 'background.paper',
+                  boxShadow: 1
                 }}
               >
-                <Card
-                  sx={{
-                    p: 2,
-                    maxWidth: '70%',
-                    backgroundColor: msg.sender === 'user' ? 'primary.light' : 'background.paper',
-                    boxShadow: 1
-                  }}
-                >
-                  <Typography variant="body1">{msg.text}</Typography>
-                  {msg.sender === 'bot' && (
-                    <>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={msg.confidence}
-                          sx={{
-                            width: '100px',
-                            height: '8px',
-                            borderRadius: 2,
-                            mr: 1
-                          }}
-                        />
+                <Typography variant="body1">{msg.text}</Typography>
+                {msg.sender === 'bot' && (
+                  <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                      <LinearProgress
+                        variant="determinate"
+                        value={msg.confidence}
+                        sx={{ width: '100px', height: '8px', borderRadius: 2, mr: 1 }}
+                      />
+                      <Typography variant="caption" color="textSecondary">
+                        {msg.confidence}% Confidence
+                      </Typography>
+                    </Box>
+                    {msg.sources && msg.sources.length > 0 && (
+                      <Box sx={{ mt: 1 }}>
                         <Typography variant="caption" color="textSecondary">
-                          {msg.confidence}% Confidence
+                          Sources:
                         </Typography>
+                        {msg.sources.map((source, i) => (
+                          <Chip
+                            key={i}
+                            label={`${source.title} (${source.folder})`}
+                            size="small"
+                            sx={{ mr: 0.5, mt: 0.5 }}
+                          />
+                        ))}
                       </Box>
-                      {msg.sources && msg.sources.length > 0 && (
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant="caption" color="textSecondary">
-                            Sources:
-                          </Typography>
-                          {msg.sources.map((source, i) => (
-                            <Chip
-                              key={i}
-                              label={`${source.title} (${source.folder})`}
-                              size="small"
-                              sx={{ mr: 0.5, mt: 0.5 }}
-                            />
-                          ))}
-                        </Box>
-                      )}
-                    </>
-                  )}
-                  <Typography
-                    variant="caption"
-                    color="textSecondary"
-                    sx={{ display: 'block', mt: 0.5 }}
-                  >
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </Typography>
-                </Card>
-              </Box>
-            ))}
-            {loading && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                <CircularProgress size={24} />
-              </Box>
-            )}
-            <div ref={messagesEndRef} />
-          </Box>
+                    )}
+                  </>
+                )}
+                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
+                  {new Date(msg.timestamp).toLocaleTimeString()}
+                </Typography>
+              </Card>
+            </Box>
+          ))}
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
+          )}
+          <div ref={messagesEndRef} />
+        </Box>
 
-          {/* Input Area */}
-          <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
-            <form onSubmit={handleSubmit}>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <TextField
-                  fullWidth
-                  multiline
-                  maxRows={4}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Ask a question about the institution..."
-                  disabled={loading}
-                  InputProps={{
-                    sx: { borderRadius: 4 },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <History color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading || !message.trim()}
-                    sx={{ borderRadius: 4 }}
-                  >
-                    <Send sx={{ mr: 1 }} /> Send
-                  </Button>
-                </Box>
-              </Box>
-            </form>
-          </Box>
+        {/* Input */}
+        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <TextField
+                fullWidth
+                multiline
+                maxRows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Ask a question about the institution..."
+                disabled={loading}
+                InputProps={{
+                  sx: { borderRadius: 4 },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <History color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={loading || !message.trim()}
+                sx={{ borderRadius: 4 }}
+              >
+                <Send sx={{ mr: 1 }} /> Send
+              </Button>
+            </Box>
+          </form>
         </Box>
       </Grid>
     </Grid>

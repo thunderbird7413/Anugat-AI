@@ -16,7 +16,7 @@ const Dashboard = () => {
       <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
         <Button 
           variant="contained" 
-          href="/content"
+          href="/repository"
           sx={{ px: 4, py: 2 }}
         >
           Manage Content

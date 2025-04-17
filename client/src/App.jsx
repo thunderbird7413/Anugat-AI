@@ -8,6 +8,7 @@ import ContentManager from './pages/ContentManager';
 import ChatInterface from './pages/ChatInterface';
 import Navbar from './components/Navbar';
 import Register from './pages/Register';
+import FolderManager from './pages/folderManager';
 
 
 function App() {
@@ -20,6 +21,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/repository" element={<FolderManager />} />
+
+            {/* Dynamic folder view */}
+            <Route path="/repository/folder/:folderId" element={<FolderManager />} />
             <Route path="/content" element={<ContentManager />} />
             <Route path="/chat" element={<ChatInterface />} />
           </Route>

@@ -3,6 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Content = require('../models/Content');
 const Chat = require("../models/Chat");
 const Gap = require("../models/Gap");
+const { mongoose } = require("mongoose");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 
@@ -67,7 +68,9 @@ exports.generateResponse = async (req, res) => {
           numCandidates: 150,
           limit: 5,
           index: "contentSemanticIndex",
-          filter: { owner: userId }
+          filter: { 
+            owner: new mongoose.Types.ObjectId(userId)
+          }
         }
       },
       {
