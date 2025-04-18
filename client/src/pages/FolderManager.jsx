@@ -265,17 +265,6 @@ const FolderManager = () => {
 
       {/* Filters and Search */}
       <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2} mb={3}>
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          {['all', 'pdf', 'text', 'image', 'video', 'link'].map((filter) => (
-            <Chip
-              key={filter}
-              label={filter.charAt(0).toUpperCase() + filter.slice(1)}
-              color={activeFilter === filter ? 'primary' : 'default'}
-              onClick={() => handleFilterChange(filter)}
-              clickable
-            />
-          ))}
-        </Stack>
         <form onSubmit={handleSearch}>
           <Stack direction="row" spacing={1} alignItems="center">
             <TextField
