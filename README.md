@@ -77,9 +77,3 @@ To maintain efficiency:
 - It weights high-similarity results more favorably but ensures a floor of 10, even if similarity is very low.  
 - Helps with thresholding later:  
   - If confidence < 70, the system treats the answer as less reliable and stores it in the Gap collection.  
-
-
-## Contributors
-
-- _Your Name_  
-- _Optional: Other team members_  
