@@ -9,6 +9,7 @@ import {
 import { Send, Search, Delete, History, Add } from '@mui/icons-material';
 
 const ChatInterface = () => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const ChatInterface = () => {
 
   const fetchChatHistory = async () => {
     try {
-      const res = await axios.get('/api/chat/chatHistory', {
+      const res = await axios.get(`${BASE_URL}/api/chat/chatHistory`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       setChatHistory(res.data);
@@ -48,7 +49,7 @@ const ChatInterface = () => {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const response = await axios.post('/api/chat', { question: message }, {
+      const response = await axios.post(`${BASE_URL}/api/chat`, { question: message }, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
 
@@ -78,7 +79,7 @@ const ChatInterface = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/chat/${id}`, {
+      await axios.delete(`${BASE_URL}/api/chat/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       setToastOpen(true);

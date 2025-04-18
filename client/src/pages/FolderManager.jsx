@@ -21,6 +21,7 @@ import axios from 'axios';
 import { Add, UploadFile, Search, Folder } from '@mui/icons-material';
 
 const FolderManager = () => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { folderId } = useParams();
   const navigate = useNavigate();
 
@@ -42,7 +43,7 @@ const FolderManager = () => {
       setIsLoading(true);
       try {
         if (folderId) {
-          const res = await axios.get(`/api/folders/${folderId}`);
+          const res = await axios.get(`${BASE_URL}/api/folders/${folderId}`);
           setCurrentFolder(res.data.folder);
           setFolders(res.data.subfolders);
           setOriginalFolders(res.data.subfolders); // Store original
@@ -54,13 +55,13 @@ const FolderManager = () => {
           const breadcrumbData = await Promise.all(
             pathParts.map(async (part, index) => {
               const path = '/' + pathParts.slice(0, index + 1).join('/');
-              const res = await axios.get(`/api/folders/byPath?path=${path}`);
+              const res = await axios.get(`${BASE_URL}/api/folders/byPath?path=${path}`);
               return { id: res.data._id, name: part };
             })
           );
           setBreadcrumbs(breadcrumbData);
         } else {
-          const res = await axios.get('/api/folders?parentId=null');
+          const res = await axios.get(`${BASE_URL}/api/folders?parentId=null`);
           setFolders(res.data);
           setOriginalFolders(res.data); // Store original
           setContents([]);
@@ -80,7 +81,7 @@ const FolderManager = () => {
 
   const handleCreateFolder = async (folderData) => {
     try {
-      const res = await axios.post('/api/folders', {
+      const res = await axios.post(`${BASE_URL}/api/folders`, {
         ...folderData,
         parentFolderId: currentFolder ? currentFolder._id : null,
       });
@@ -114,7 +115,7 @@ const FolderManager = () => {
         formData.append('file', file);
       }
 
-      const res = await axios.post('/api/content/upload', formData, {
+      const res = await axios.post(`${BASE_URL}/api/content/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

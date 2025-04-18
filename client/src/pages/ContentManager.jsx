@@ -21,6 +21,7 @@ import {
 import { Delete, CloudUpload } from '@mui/icons-material';
 
 const ContentManager = () => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [title, setTitle] = useState('');
   const [type, setType] = useState('text');
   const [content, setContent] = useState('');
@@ -41,7 +42,7 @@ const ContentManager = () => {
   const fetchContents = async () => {
     setcontentLoading(true);
     try {
-      const response = await axios.get('/api/content', {
+      const response = await axios.get(`${BASE_URL}/api/content`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       setContents(response.data);
@@ -67,7 +68,7 @@ const ContentManager = () => {
     }
 
     try {
-      await axios.post('/api/content/upload', formData, {
+      await axios.post(`${BASE_URL}/api/content/upload`, formData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           'Content-Type': 'multipart/form-data'
@@ -87,7 +88,7 @@ const ContentManager = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/content/${id}`, {
+      await axios.delete(`${BASE_URL}/api/content/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       fetchContents();

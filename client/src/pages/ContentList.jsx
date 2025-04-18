@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 
 const ContentList = ({ contents, onDeleteContent }) => {
   const { authToken } = useAuth();
-
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Helper to get appropriate icon for content type
   const getContentIcon = (type) => {
     switch (type) {
@@ -38,7 +38,7 @@ const ContentList = ({ contents, onDeleteContent }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/content/${id}`, {
+      await axios.delete(`${BASE_URL}/api/content/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       }).then(() => onDeleteContent(id))
         .catch(err => console.error('Error deleting content:', err));
@@ -70,7 +70,7 @@ const ContentList = ({ contents, onDeleteContent }) => {
                 color="error"
                 onClick={() => {
                   if (window.confirm('Are you sure you want to delete this item?')) {
-                    // axios.delete(`/api/content/${id}`, {
+                    // axios.delete(`${BASE_URL}/api/content/${id}`, {
                     //   headers: { Authorization: `Bearer ${authToken}` }
                     // })
                     //   .then(() => onDeleteContent(content._id))
