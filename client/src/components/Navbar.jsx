@@ -15,12 +15,12 @@ const Navbar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Institution Portal
+        <Typography component={Link} to="/" variant="h6" sx={{ flexGrow: 1, textDecoration: "none", color: "white"}} >
+          Anugat AI
         </Typography>
         {authToken ? (
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" component={Link} to="/">
+            <Button color="inherit" component={Link} to="/dashboard">
               Dashboard
             </Button>
             <Button color="inherit" component={Link} to="/repository">
