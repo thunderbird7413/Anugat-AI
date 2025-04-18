@@ -25,7 +25,6 @@ function App() {
 
             {/* Dynamic folder view */}
             <Route path="/repository/folder/:folderId" element={<FolderManager />} />
-            <Route path="/content" element={<ContentManager />} />
             <Route path="/chat" element={<ChatInterface />} />
           </Route>
         </Routes>

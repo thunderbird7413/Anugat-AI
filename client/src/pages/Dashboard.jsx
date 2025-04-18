@@ -16,14 +16,14 @@ const Dashboard = () => {
       <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
         <Button 
           variant="contained" 
-          href="/repository"
+          component={Link} to="/repository"
           sx={{ px: 4, py: 2 }}
         >
           Manage Content
         </Button>
         <Button 
           variant="outlined" 
-          href="/chat"
+          component={Link} to="/chat"
           sx={{ px: 4, py: 2 }}
         >
           Test Chatbot
