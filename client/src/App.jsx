@@ -8,7 +8,7 @@ import ContentManager from './pages/ContentManager';
 import ChatInterface from './pages/ChatInterface';
 import Navbar from './components/Navbar';
 import Register from './pages/Register';
-import FolderManager from './pages/folderManager';
+import FolderManager from './pages/FolderManager';
 
 
 function App() {
